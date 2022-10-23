@@ -6,6 +6,7 @@ public class FireBall : MonoBehaviour
 {
     public GameObject fireBall;
     public Transform fireBallPos;
+    public Vector2 fireBallForce = new Vector2(80f, -3f);
     public Vector2 direction;
     // Start is called before the first frame update
     void Start()
@@ -24,20 +25,14 @@ public class FireBall : MonoBehaviour
         GameObject _fireBall = Instantiate(fireBall, pos.position, Quaternion.identity);
         if(playerRb.velocity.x > 0)
         {
-            direction = new Vector2(5f, 0f);
+            direction = new Vector2(fireBallForce.x, fireBallForce.y);
         }
         else
         {
-            direction = new Vector2(-5f, 0f);
+            direction = new Vector2(-fireBallForce.x, fireBallForce.y);
         }
         _fireBall.GetComponent<Rigidbody2D>().AddForce(direction);
-        _fireBall.GetComponent<Rigidbody2D>().AddTorque(0.4f);
+        _fireBall.GetComponent<Rigidbody2D>().AddTorque(4f);
     }
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if(!collision.gameObject.CompareTag("Player"))
-        {
-            Destroy(this.gameObject);
-        }
-    }
+    
 }

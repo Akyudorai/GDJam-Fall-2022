@@ -10,7 +10,9 @@ public class PlayerController : MonoBehaviour
     public float speed = 5f;
     public float jumpForce = 5f;
     public float airForce = 100f;
+    public GameObject projectilePos;
     CapsuleCollider2D collider;
+    public GameObject mainCamera;
     // Start is called before the first frame update
     void Start()
     {
@@ -48,6 +50,12 @@ public class PlayerController : MonoBehaviour
         {
             rb.AddForce(new Vector2(0f, jumpForce));
         }
+
+        if(Input.GetKeyDown(KeyCode.E))
+        {
+            GetComponent<FireBall>().LaunchFireBall(projectilePos.transform, rb);
+        }
+        mainCamera.GetComponent<Transform>().position = new Vector3(this.gameObject.transform.position.x, mainCamera.transform.position.y, mainCamera.transform.position.z);
     }
 
     private bool isGrounded()
@@ -64,7 +72,7 @@ public class PlayerController : MonoBehaviour
             rayColor = Color.red;
         }
         Debug.DrawRay(collider.bounds.center, Vector2.down * (collider.bounds.extents.y + extraHeightTest), rayColor);
-        Debug.Log(raycastHit.collider);
+        //Debug.Log(raycastHit.collider);
         return raycastHit.collider != null;
     }
 }
