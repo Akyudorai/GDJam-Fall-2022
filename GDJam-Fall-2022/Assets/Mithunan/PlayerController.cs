@@ -12,7 +12,10 @@ public class PlayerController : MonoBehaviour
     public float airForce = 100f;
     public GameObject projectilePos;
     CapsuleCollider2D collider;
-    public GameObject mainCamera;
+
+    [Header("Camera Shake")]
+    public CameraShake cameraShakeRef;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -75,4 +78,13 @@ public class PlayerController : MonoBehaviour
         //Debug.Log(raycastHit.collider);
         return raycastHit.collider != null;
     }
+
+    private void OnCollisionEnter2D(Collision2D other) 
+    {
+        if (other.gameObject.tag == "Ground") {
+            Debug.Log("Ground Collision!");
+            StartCoroutine(cameraShakeRef.Shake(.15f, .4f));
+        }
+    }
+
 }
