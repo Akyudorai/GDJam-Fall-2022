@@ -12,6 +12,8 @@ public class PlayerController : MonoBehaviour
     public float airForce = 100f;
     public GameObject projectilePos;
     CapsuleCollider2D collider;
+    public GameObject mainCamera;
+    public Sprite kainat;
 
     [Header("Camera Shake")]
     public CameraShake cameraShakeRef;
@@ -28,7 +30,9 @@ public class PlayerController : MonoBehaviour
     {
         if(Input.GetKey(KeyCode.A))
         {
-            if(isGrounded())
+            GetComponent<SpriteRenderer>().flipX = true;
+            GetComponent<CapsuleCollider2D>().offset = new Vector2(-0.69f, 0.08f);
+            if (isGrounded())
             {
                 rb.velocity = new Vector2(-speed, 0f);
             }
@@ -40,6 +44,8 @@ public class PlayerController : MonoBehaviour
         }
         if(Input.GetKey(KeyCode.D))
         {
+            GetComponent<SpriteRenderer>().flipX = false;
+            GetComponent<CapsuleCollider2D>().offset = new Vector2(0.65f, 0.08f);
             if (isGrounded())
             {
                 rb.velocity = new Vector2(speed, 0f);
@@ -56,9 +62,18 @@ public class PlayerController : MonoBehaviour
 
         if(Input.GetKeyDown(KeyCode.E))
         {
-            GetComponent<FireBall>().LaunchFireBall(projectilePos.transform, rb);
+            //GetComponent<FireBall>().LaunchFireBall(projectilePos.transform, rb);
         }
-        mainCamera.GetComponent<Transform>().position = new Vector3(this.gameObject.transform.position.x, mainCamera.transform.position.y, mainCamera.transform.position.z);
+
+        if(Input.GetMouseButtonUp(0))
+        {
+            Vector2 direction = transform.position - Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            direction.Normalize();
+
+            GetComponent<FireBall>().LaunchFireBall(projectilePos.transform, -direction);
+
+        }
+        //mainCamera.GetComponent<Transform>().position = new Vector3(this.gameObject.transform.position.x, mainCamera.transform.position.y, mainCamera.transform.position.z);
     }
 
     private bool isGrounded()
@@ -83,8 +98,17 @@ public class PlayerController : MonoBehaviour
     {
         if (other.gameObject.tag == "Ground") {
             Debug.Log("Ground Collision!");
-            StartCoroutine(cameraShakeRef.Shake(.15f, .4f));
+            StartCoroutine(cameraShakeRef.Shake(0.5f, 1f));
         }
+    }
+
+    public IEnumerator KainatWakesUp()
+    {
+        GetComponent<SpriteRenderer>().sprite = kainat;
+        GetComponent<Transform>().localScale = GetComponent<Transform>().localScale * 0.5f;
+        GetComponent<Transform>().position = new Vector3(this.gameObject.transform.position.x, 10f, this.gameObject.transform.position.z);
+        yield return new WaitForSeconds(3);
+        GameObject.Find("GameManager").GetComponent<Points>().EndGame();
     }
 
 }

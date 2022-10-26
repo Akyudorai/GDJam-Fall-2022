@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class Points : MonoBehaviour
@@ -19,7 +20,8 @@ public class Points : MonoBehaviour
         else
         {
             points = this;
-        }    
+        }
+        DontDestroyOnLoad(this.gameObject);
     }
 
     public int GetPoints()
@@ -33,5 +35,10 @@ public class Points : MonoBehaviour
         pointsText.text = pointsCollected.ToString();
     }
 
+    public void EndGame()
+    {
+        SceneManager.LoadScene("End Scene");
+    }
     
+
 }
